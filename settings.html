@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>CONNECT</title>
+        <link rel="stylesheet" href="https://unpkg.com/huebee@2/dist/huebee.min.css">
+        <link rel="stylesheet" href="style.css" />
+        <script>
+            window.addEventListener("orientationchange", (event) => {
+                window.location.reload();
+            });
+            window.addEventListener("resize", () => {
+                window.location.reload();
+            });
+        </script>
+    </head>
+    <body>
+        <div>
+            <header>
+                <h1 style = "font-size: 4vh; text-align: center;">SETTINGS</h1>
+                <script>
+                    function back(){
+                        if (localStorage.getItem("Dot") != document.getElementById("Dot").value) {
+                            localStorage.setItem("Dot", document.getElementById("Dot").value);
+                        }
+
+                        if (localStorage.getItem("Line") != document.getElementById("Line").value) {
+                            localStorage.setItem("Line", document.getElementById("Line").value);
+                        }
+
+                        if (localStorage.getItem("Highlight") !=
+                            document.getElementById("Highlight").value) {
+                            localStorage.setItem(
+                                "Highlight",
+                                document.getElementById("Highlight").value
+                            );
+
+                            localStorage.setItem(
+                                "text",
+                                document.getElementById("Highlight").style.color
+                            );
+                        }
+
+                        if (localStorage.getItem("hard") == "false"){
+                            localStorage.setItem("hard_crown", "false");
+                        }
+
+
+                        //Close Button clicked
+                        window.location = "/";
+                       
+                    }
+                </script>
+                <button onclick="back()" style = "font-size: 25px; position: absolute; 
+                        right: 0; top: 0; width: 100px - 2vh; min-width: 50px; height: 100px - 2vh;
+                        min-height: 50px;">X</button>
+            </header>
+
+            <div>
+
+                <div id = "light" style = "width: 100vw; display: inline-block; border-bottom: solid 3px #3a3a3c; border-top: solid 3px #3a3a3c;">
+                    <h1 style= "font-size: 2.5vh; text-align: center;">Dark Theme</h1>
+                    <p id = "lightExplain" style= "font-size: 2vh; text-align: center;">(Light Mode vs. Dark Mode)</p>
+                    <label class = "switch" id = "lightToggle" style = "margin-left: 44vw; top: -1.2vh;">
+                        <input id = "darkInput" type = "checkbox">
+                        <span onclick = "lightSwitch()" class = "slider"></span>
+                    </label>
+                    <script>
+
+                        if (localStorage.getItem("dark") == "true"){
+                            document.body.classList.add("dark-mode");
+                        } else {
+                            document.body.classList.remove("dark-mode");
+                        }
+
+                        function lightSwitch(){
+                            if (localStorage.getItem("dark") == "true") {
+                                localStorage.setItem("dark", "false");
+                                document.body.classList.remove("dark-mode");
+                            } else {
+                                localStorage.setItem("dark", "true");
+                                document.body.classList.add("dark-mode");
+                            }
+                        }
+                       
+                        if (localStorage.getItem("dark") == "true") {
+                            document.getElementById("darkInput").checked = true;
+                        }
+
+                    </script>
+                </div>
+
+                <div id = "hard" style = "width: 100vw; display: inline-block; border-bottom: solid 3px #3a3a3c;">
+                    <h1 style= "font-size: 2.5vh; text-align: center;">Hard Mode</h1>
+                    <p id = "hardExplain" style= "font-size: 2vh; text-align: center;">(The length of each line is not shown in Hard Mode)</p>
+                    <label class = "switch" id = "hardToggle" style = "margin-left: 44vw; top: -1.2vh;">
+                        <input id = "hardInput" type = "checkbox">
+                        <span onclick = "hardSwitch()" class = "slider"></span>
+                    </label>
+                    <script>
+
+                        function hardSwitch(){
+                            if (localStorage.getItem("hard") == "true") {
+                                localStorage.setItem("hard", "false");
+                            } else {
+                                localStorage.setItem("hard", "true");
+                            }
+                        }
+                       
+                        if (localStorage.getItem("hard") == "true") {
+                            document.getElementById("hardInput").checked = true;
+                        }
+
+                    </script>
+                </div>
+
+                <div id = "dotColor" style = "width: 100vw; display: inline-block; border-bottom: solid 3px #3a3a3c;">
+                   <h1 style= "font-size: 2.5vh; text-align: center;">Dot Color</h1>
+                   <p id = "dotExplain" style= "font-size: 2vh; text-align: center;">(Change the Dot Color)</p>
+                   <input class = "text-input" id = "Dot" data-huebee='{ "saturations": 3, "hues":6, "shades":3 }'
+                    style = "display: block; margin: auto; margin-bottom: 1vh;">
+                   <script>
+
+                        ptFillColor = document.getElementById("Dot").value;
+                        if (localStorage.getItem("Dot")) {
+                            document.getElementById("Dot").value = localStorage.getItem("Dot");
+                        } else {
+                            document.getElementById("Dot").value = ptFillColor;
+                        }
+                   </script>
+                </div>
+
+                <div id = "lineColor" style = "width: 100vw; display: inline-block; border-bottom: solid 3px #3a3a3c;">
+                    <h1 style= "font-size: 2.5vh; text-align: center;">Line Color</h1>
+                    <p id = "lineExplain" style= "font-size: 2vh; text-align: center;">(Change the Line Color)</p>
+                    <input class = "text-input" id = "Line" data-huebee='{ "saturations": 3, "hues":6, "shades":3 }'
+                     style = "display: block; margin: auto; margin-bottom: 1vh;">
+                    <script>
+ 
+                         lineFillColor = document.getElementById("Line").value;
+                         if (localStorage.getItem("Line")) {
+                             document.getElementById("Line").value = localStorage.getItem("Line");
+                         } else {
+                             document.getElementById("Line").value = lineFillColor;
+                         }
+                    </script>
+                 </div>
+
+                 <div id = "highlightColor" style = "width: 100vw; display: inline-block; border-bottom: solid 3px #3a3a3c;">
+                    <h1 style= "font-size: 2.5vh; text-align: center;">Highlight Color</h1>
+                    <p id = "highlightExplain" style= "font-size: 2vh; text-align: center;">(Change the Highlight Color)</p>
+                    <input class = "text-input" id = "Highlight" data-huebee='{ "saturations": 3, "hues":6, "shades":3 }'
+                     style = "display: block; margin: auto; margin-bottom: 1vh;">
+                    <script>
+ 
+                         highlight = document.getElementById("Highlight").value;
+                         if (localStorage.getItem("Highlight")) {
+                             document.getElementById("Highlight").value = localStorage.getItem("Highlight");
+                         } else {
+                             document.getElementById("Highlight").value = highlight;
+                         }
+                    </script>
+                 </div>
+
+                 <div id = "coffee" style = "width: 100vw; display: inline-block; border-bottom: solid 3px #3a3a3c;">
+                    <h1 style= "font-size: 2.5vh; text-align: center;">Buy Me a Coffee</h1>
+                    <p id = "coffeeExplain" style= "font-size: 2vh; text-align: center;">
+                        (If you enjoyed this, then please consider supporting my work!)</p>
+                    <img src = "/images/coffee.png" style = "margin: auto; display: block; width: auto; height: max(11vh, 8vw)" onclick="coffee()">
+                    <script>
+                        function coffee(){
+                            window.open("https://www.buymeacoffee.com/TKXZEgwi4w", "_blank");
+                        }
+                    </script>
+                 </div>
+
+                 <div id = "email" style = "width: 100vw; display: inline-block; border-bottom: solid 3px #3a3a3c;">
+                    <h1 style= "font-size: 2.5vh; text-align: center;">Send Feedback</h1>
+                    <p id = "emailExplain" style= "font-size: 2.5vh; text-align: center;">
+                        (If you have any ideas on how this site can improve, please send any recommendations this way!)</p>
+                    <img src = "/images/email.png" style = "margin: auto; display: block; width: auto; height: max(11.75vh, 8.75vw)" onclick="email()">
+                    <script>
+                        function email(){
+                            window.open("https://forms.gle/dtrXrKPgjQbG3YieA", "_blank");
+                        }
+                    </script>
+                 </div>
+
+            </div>
+            <script src =  "https://unpkg.com/huebee@2/dist/huebee.pkgd.min.js"></script>
+            <script>
+                function daily_timer(){
+                        var d1 = new Date();
+                        var d2 = Date.UTC(
+                            d1.getUTCFullYear(),
+                            d1.getUTCMonth(),
+                            d1.getUTCDate() + (d1.getUTCHours() < 4 ? 0 : 1),
+                            4
+                        );
+      
+                        var dh = d2 - d1;
+                        var hours = Math.floor(dh / 3600000);
+                        var dm = dh - 3600000 * hours;
+                        var min = Math.floor(dm / 60000);
+                        var ds = dm - 60000 * min;
+                        var sec = Math.floor(ds / 1000);
+                        var dmilli = ds - 1000 * sec;
+                        setTimeout(daily_timer, dmilli);
+                        hours = ("0" + hours).slice(-2);
+                        min = ("0" + min).slice(-2);
+                        sec = ("0" + sec).slice(-2);
+
+
+                        if(document.getElementById("countdown")){
+                            document.getElementById("countdown").textContent = hours + ":" + min + ":" + sec;
+                        }
+                       
+                        const launch_date = new Date(2022, 9, 14).setHours(0, 0, 0);
+
+      
+                        //if the codenum is different from calc days then reset everything
+                        if (
+                          hours + ":" + min + ":" + sec === "00:00:00" ||
+                          localStorage.getItem("day") && parseInt(localStorage.getItem("day")) !== Math.trunc((new Date() - launch_date) / 86400000)
+                        ) {
+                          //if calc days - last_day_won is larger than 1 then I get rid of the streak
+                          if (Math.trunc((new Date() - launch_date) / 86400000) - parseInt(localStorage.getItem("last_day_won")) > 1) {
+                            localStorage.setItem("current_streak", 0);
+                          }
+      
+                          localStorage.setItem(
+                            "day",
+                            Math.trunc((new Date() - launch_date) / 86400000)
+                          );
+
+                          localStorage.setItem("seed", localStorage.getItem("day"))
+      
+
+                          localStorage.setItem("time", 0);
+                          localStorage.setItem("alpha_pts", "");
+                          localStorage.setItem("indexes", "");
+                          localStorage.setItem("des_pts", "");
+                          localStorage.setItem("asc_pts", "");
+                          localStorage.setItem("pts", "")
+                          localStorage.removeItem("range")
+                          
+                          
+                          if (localStorage.getItem("hard") === "true") {
+                            localStorage.setItem("hard_crown", "true");
+                          }
+      
+                          //reload page
+                          window.location.href = '/index.html'; 
+                        }
+                                    }
+                setInterval(daily_timer(), 1000); 
+            </script>
+        </div>
+    </body>
+  </div>
+</html>

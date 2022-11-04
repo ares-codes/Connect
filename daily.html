@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>CONNECT</title>
+        <link rel="stylesheet" href="style.css" />
+        <script>
+            window.addEventListener("orientationchange", (event) => {
+                window.location.reload();
+            });
+            window.addEventListener("resize", () => {
+                window.location.reload();
+            });
+
+            if(!localStorage.getItem("order")){
+                localStorage.setItem("order","1")
+            }
+        </script>
+    </head>
+    <body>
+        <div style = "position: relative;">
+            <header>
+                <h1 style = "font-size: 4vh; text-align: center;">Daily Statistics</h1>
+                <script>
+                    function back(){
+                        window.location = "/"
+                    }
+                </script>
+                <button onclick="back()" style = "font-size: 25px; position: absolute; 
+                        right: 0; top: 0; width: 100px - 2vh; min-width: 50px; height: 100px - 2vh;
+                        min-height: 50px;">X</button>
+            </header>
+            <div class="message-container"></div>
+
+            <script>
+                function showMessageStats(message, time) {
+                    let mDisplay = document.querySelector(".message-container");
+
+                    const messageElement = document.createElement("p");
+                    messageElement.textContent = message;
+                    mDisplay.append(messageElement);
+                    setTimeout(() => mDisplay.removeChild(messageElement), time);
+                }
+            </script>
+
+            <div>
+                <div style="margin: auto; display: block; width: fit-content;">
+                    <button id = "1" onclick = "change(1)" style = "height: 5vh; width: 15vw">Alphabetical</button>
+                    <button id =  "2" style = "height: 5vh; width: 15vw" onclick = "change(2)">Ascending</button>
+                    <button id = "3" style = "height: 5vh; width: 15vw" onclick = "change(3)">Descending</button>
+                </div>
+
+                <script>
+
+                    if (localStorage.getItem("dark") == "true"){
+                        document.body.classList.add("dark-mode");
+                    } else {
+                        document.body.classList.remove("dark-mode");
+                    }
+
+                    function change(num) {
+                        if (document.getElementById(localStorage.getItem("order"))) {
+                            document.getElementById(
+                            localStorage.getItem("order")
+                            ).style.backgroundColor = null;
+                        }
+
+                        if (document.getElementById(num.toString())) {
+                            document.getElementById(num.toString()).style.backgroundColor = "#8FF";
+                        }
+
+                        localStorage.setItem("order", num.toString());
+                        window.location.reload();
+                    }
+
+
+                    if (localStorage.getItem("order") == "1"){
+                        document.getElementById("1").style.backgroundColor = "#8FF"
+                    } else if (localStorage.getItem("order") == "2") {
+                        document.getElementById("2").style.backgroundColor = "#8FF"
+                    } else {
+                        document.getElementById("3").style.backgroundColor = "#8FF"
+                    }
+
+                    
+                </script>
+                
+                    
+                <div style="margin-top: 3vh">
+                        <canvas id = "dailyCanvas" style = "width: 100vw; height: 65vh; position: relative;"></canvas>
+                        <script>
+                            let dailyCanvas = document.getElementById("dailyCanvas");
+                            let ctx = dailyCanvas.getContext("2d");
+                            let dpi = window.devicePixelRatio;
+
+                            let style_height = +getComputedStyle(dailyCanvas)
+                            .getPropertyValue("height")
+                            .slice(0, -2);
+                            //get CSS width
+                            let style_width = +getComputedStyle(dailyCanvas)
+                            .getPropertyValue("width")
+                            .slice(0, -2);
+
+                            dailyCanvas.setAttribute("height", style_height * dpi);
+                            dailyCanvas.setAttribute("width", style_width * dpi);
+
+                            let radius = 0.035 * Math.min(dailyCanvas.width, dailyCanvas.height);
+
+                            ctx.strokeStyle = localStorage.getItem("Line") ? localStorage.getItem("Line") : "red"; //lineColor
+                            ctx.lineWidth = 5;
+
+                            let lines = []
+
+                            if (localStorage.getItem("order") == "1"){
+                                lines = localStorage.getItem("alpha_pts").split(",")
+                            } else if (localStorage.getItem("order") == "2") {
+                                lines = localStorage.getItem("asc_pts").split(",")
+                            } else {
+                                lines = localStorage.getItem("des_pts").split(",")
+                            }
+
+
+                            let all_pts = localStorage.getItem("pts").split(",")
+                            console.log(all_pts)
+
+                            if (lines){
+                                for (let i = 0; i < lines.length; i += 2){
+                                    //Figure out the distance between the two points 
+                                    let d =  Math.sqrt((parseFloat(all_pts[2 * parseInt(lines[i])]) - 
+                                    parseFloat(all_pts[2 * parseInt(lines[i + 1])])) ** 2 + 
+                                    (parseFloat(all_pts[1 + 2 * parseInt(lines[i])]) - 
+                                    parseFloat(all_pts[1 + 2 * parseInt(lines[i + 1])])) ** 2) 
+
+                                    console.log(d)
+                        
+                                   
+
+                                    ctx.beginPath()
+                                    ctx.strokeStyle = localStorage.getItem("Line") ? localStorage.getItem("Line") : "red"; //lineColor
+                                    ctx.lineWidth = 5;
+                                    ctx.moveTo((dailyCanvas.width / 2) - d/2, (1 + i) * dailyCanvas.height / 20);
+                                    ctx.lineTo((dailyCanvas.width / 2) + d/2, (1 + i) * dailyCanvas.height / 20);
+                                    ctx.stroke();
+                                    ctx.closePath()
+
+                                    ctx.beginPath();
+                                    ctx.arc((dailyCanvas.width / 2) - d/2, (1 + i) * dailyCanvas.height / 20, radius, 0, 2 * Math.PI, false);
+                                    ctx.fillStyle = localStorage.getItem("Highlight") ? localStorage.getItem("Highlight") : "yellow"; //circleFillColor
+                                    ctx.fill();
+                                    ctx.lineWidth = 4;
+                                    ctx.strokeStyle = localStorage.getItem("dark") === "true" ? "white" : "black";
+                                    ctx.stroke();
+
+                                    ctx.beginPath();
+                                    ctx.arc((dailyCanvas.width / 2) + d/2, (1 + i) * dailyCanvas.height / 20 , radius, 0, 2 * Math.PI, false);
+                                    ctx.fillStyle = localStorage.getItem("Highlight") ? localStorage.getItem("Highlight") : "yellow"; //circleFillColor
+                                    ctx.fill();
+                                    ctx.lineWidth = 4;
+                                    ctx.strokeStyle = localStorage.getItem("dark") === "true" ? "white" : "black";
+                                    ctx.stroke();
+
+
+                                    ctx.beginPath()
+                                    ctx.font = (1.8 * radius).toString() + "px serif";
+                                    ctx.textAlign = "center"
+                                    ctx.fillStyle =  "black"
+                                    ctx.textBaseline = "middle"
+
+                                    let code = "A".charCodeAt(0);
+                                    let txt = ""
+
+                                    //order for alpha
+                                    if (localStorage.getItem("order") == "1"){
+                                        txt = String.fromCharCode(code + i / 2);
+                                    } else if (localStorage.getItem("order") == "2") {
+                                        txt = String.fromCharCode(code + parseInt(localStorage.getItem("indexes").split(",")[i / 2]));
+                                    } else {
+                                        txt = String.fromCharCode(code + parseInt(localStorage.getItem("indexes").split(",").reverse()[i / 2]));
+                                    }
+
+                                    ctx.fillText(txt, (dailyCanvas.width / 2) - d/2, (1 + i) * dailyCanvas.height / 20);
+                                    ctx.fillText(txt, (dailyCanvas.width / 2) + d/2, (1 + i) * dailyCanvas.height / 20);
+                                    ctx.closePath();
+
+                               
+                                }
+
+                                    if(lines.length == 16){
+                                        d = parseInt(localStorage.getItem("dist")) * parseFloat(localStorage.getItem("unit_dist"))
+                                    i = lines.length
+                                    ctx.beginPath()
+                                    ctx.strokeStyle = localStorage.getItem("Line") ? localStorage.getItem("Line") : "red"; //lineColor
+                                    ctx.lineWidth = 5;
+                                    ctx.moveTo((dailyCanvas.width / 2) - d/2, (1 + i) * dailyCanvas.height / 20);
+                                    ctx.lineTo((dailyCanvas.width / 2) + d/2, (1 + i) * dailyCanvas.height / 20);
+                                    ctx.stroke();
+                                    ctx.closePath()
+
+                                    ctx.beginPath();
+                                    ctx.arc((dailyCanvas.width / 2) - d/2, (1 + i) * dailyCanvas.height / 20, radius, 0, 2 * Math.PI, false);
+                                    ctx.fillStyle = localStorage.getItem("Dot") ? localStorage.getItem("Dot") : "blue"; //circleFillColor
+                                    ctx.fill();
+                                    ctx.lineWidth = 4;
+                                    ctx.strokeStyle = localStorage.getItem("dark") === "true" ? "white" : "black";
+                                    ctx.stroke();
+
+                                    ctx.beginPath();
+                                    ctx.arc((dailyCanvas.width / 2) + d/2, (1 + i) * dailyCanvas.height / 20 , radius, 0, 2 * Math.PI, false);
+                                    ctx.fillStyle = localStorage.getItem("Dot") ? localStorage.getItem("Dot") : "blue"; //circleFillColor
+                                    ctx.fill();
+                                    ctx.lineWidth = 4;
+                                    ctx.strokeStyle = localStorage.getItem("dark") === "true" ? "white" : "black";
+                                    ctx.stroke();
+                                    }
+                            }
+                        
+                        </script>
+                </div>
+
+                <div style = "align-items: center; display: flex; justify-content: center; text-align: center;">
+                    <div id = "time" style= "display: inline-block; font-size: 4vh;">
+                        <div>NEXT CONNECT</div>
+                        <div id = "countdown"></div>
+                    </div>
+                    <div id = "line" class = "vertical" style = "display: inline-block; margin-left: 10vw; margin-right: 10vw; background-color: black;"></div>
+                    <div id="share" style="display: inline-block;">
+                        <script>
+
+
+                            document.getElementById("line").style.backgroundColor= localStorage.getItem("dark") === "true" ? "white" : "black"
+
+                            function colourNameToHex(colour)
+                            {
+                                var colours = {"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
+                                "beige":"#f5f5dc","bisque":"#ffe4c4","black":"#000000","blanchedalmond":"#ffebcd","blue":"#0000ff","blueviolet":"#8a2be2","brown":"#a52a2a","burlywood":"#deb887",
+                                "cadetblue":"#5f9ea0","chartreuse":"#7fff00","chocolate":"#d2691e","coral":"#ff7f50","cornflowerblue":"#6495ed","cornsilk":"#fff8dc","crimson":"#dc143c","cyan":"#00ffff",
+                                "darkblue":"#00008b","darkcyan":"#008b8b","darkgoldenrod":"#b8860b","darkgray":"#a9a9a9","darkgreen":"#006400","darkkhaki":"#bdb76b","darkmagenta":"#8b008b","darkolivegreen":"#556b2f",
+                                "darkorange":"#ff8c00","darkorchid":"#9932cc","darkred":"#8b0000","darksalmon":"#e9967a","darkseagreen":"#8fbc8f","darkslateblue":"#483d8b","darkslategray":"#2f4f4f","darkturquoise":"#00ced1",
+                                "darkviolet":"#9400d3","deeppink":"#ff1493","deepskyblue":"#00bfff","dimgray":"#696969","dodgerblue":"#1e90ff",
+                                "firebrick":"#b22222","floralwhite":"#fffaf0","forestgreen":"#228b22","fuchsia":"#ff00ff",
+                                "gainsboro":"#dcdcdc","ghostwhite":"#f8f8ff","gold":"#ffd700","goldenrod":"#daa520","gray":"#808080","green":"#008000","greenyellow":"#adff2f",
+                                "honeydew":"#f0fff0","hotpink":"#ff69b4",
+                                "indianred ":"#cd5c5c","indigo":"#4b0082","ivory":"#fffff0","khaki":"#f0e68c",
+                                "lavender":"#e6e6fa","lavenderblush":"#fff0f5","lawngreen":"#7cfc00","lemonchiffon":"#fffacd","lightblue":"#add8e6","lightcoral":"#f08080","lightcyan":"#e0ffff","lightgoldenrodyellow":"#fafad2",
+                                "lightgrey":"#d3d3d3","lightgreen":"#90ee90","lightpink":"#ffb6c1","lightsalmon":"#ffa07a","lightseagreen":"#20b2aa","lightskyblue":"#87cefa","lightslategray":"#778899","lightsteelblue":"#b0c4de",
+                                "lightyellow":"#ffffe0","lime":"#00ff00","limegreen":"#32cd32","linen":"#faf0e6",
+                                "magenta":"#ff00ff","maroon":"#800000","mediumaquamarine":"#66cdaa","mediumblue":"#0000cd","mediumorchid":"#ba55d3","mediumpurple":"#9370d8","mediumseagreen":"#3cb371","mediumslateblue":"#7b68ee",
+                                "mediumspringgreen":"#00fa9a","mediumturquoise":"#48d1cc","mediumvioletred":"#c71585","midnightblue":"#191970","mintcream":"#f5fffa","mistyrose":"#ffe4e1","moccasin":"#ffe4b5",
+                                "navajowhite":"#ffdead","navy":"#000080",
+                                "oldlace":"#fdf5e6","olive":"#808000","olivedrab":"#6b8e23","orange":"#ffa500","orangered":"#ff4500","orchid":"#da70d6",
+                                "palegoldenrod":"#eee8aa","palegreen":"#98fb98","paleturquoise":"#afeeee","palevioletred":"#d87093","papayawhip":"#ffefd5","peachpuff":"#ffdab9","peru":"#cd853f","pink":"#ffc0cb","plum":"#dda0dd","powderblue":"#b0e0e6","purple":"#800080",
+                                "rebeccapurple":"#663399","red":"#ff0000","rosybrown":"#bc8f8f","royalblue":"#4169e1",
+                                "saddlebrown":"#8b4513","salmon":"#fa8072","sandybrown":"#f4a460","seagreen":"#2e8b57","seashell":"#fff5ee","sienna":"#a0522d","silver":"#c0c0c0","skyblue":"#87ceeb","slateblue":"#6a5acd","slategray":"#708090","snow":"#fffafa","springgreen":"#00ff7f","steelblue":"#4682b4",
+                                "tan":"#d2b48c","teal":"#008080","thistle":"#d8bfd8","tomato":"#ff6347","turquoise":"#40e0d0",
+                                "violet":"#ee82ee",
+                                "wheat":"#f5deb3","white":"#ffffff","whitesmoke":"#f5f5f5",
+                                "yellow":"#ffff00","yellowgreen":"#9acd32"};
+
+                                if (typeof colours[colour.toLowerCase()] != 'undefined')
+                                    return colours[colour.toLowerCase()];
+
+                                return false;
+                            }
+
+                            function hexToRgb(hex, result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)) {
+                                return result ? result.map(i => parseInt(i, 16)).slice(1) : null
+                                //returns [23, 14, 45] -> reformat if needed
+                            }
+
+                            function convertHMS(value) {
+                                const sec = parseInt(value, 10); // convert value to number if it's string
+                                let hours = Math.floor(sec / 3600); // get hours
+                                let minutes = Math.floor((sec - hours * 3600) / 60); // get minutes
+                                let seconds = sec - hours * 3600 - minutes * 60; //  get seconds
+                                // add 0 if value < 10; Example: 2 => 02
+                                if (hours < 10) {
+                                    hours = "0" + hours;
+                                }
+                                if (minutes < 10) {
+                                    minutes = "0" + minutes;
+                                }
+                                if (seconds < 10) {
+                                    seconds = "0" + seconds;
+                                }
+
+
+                                if(hours > 0) {
+                                    return hours + ":" + minutes + ":" + seconds;
+                                } else if (minutes > 0){
+                                    return minutes + ":" + seconds
+                                } else {
+                                    return ":" + seconds
+                                }
+                            }
+
+                            function copy(){
+                                
+
+                                if (localStorage.getItem("indexes") != null && localStorage.getItem("indexes").split(",").length == 8){
+                                let text = "CONNECT " + localStorage.getItem("day") + 
+                                " " + convertHMS(parseInt(localStorage.getItem("time")))
+ 
+
+                                if (localStorage.getItem("hard_crown") === "true") {
+                                    text += " 👑";
+                                }
+
+                                text += "\n\n";
+
+
+                                let lines = []
+                                if (localStorage.getItem("order") == "1"){
+                                    lines = localStorage.getItem("alpha_pts").split(",")
+                                } else if (localStorage.getItem("order") == "2") {
+                                    lines = localStorage.getItem("asc_pts").split(",")
+                                } else {
+                                    lines = localStorage.getItem("des_pts").split(",")
+                                }
+
+                                let colors = [[0,0,0, "⚫"], [165,42,42, "🟤"], 
+                                [128,0,128, "🟣"], [0,255,0, "🟢"], 
+                                [255,0,0, "🔴"], [255,255,255, "⚪"], 
+                                    [255,255,0, "🟡"], [255,165,0, "🟠"], [0,0,255,  "🔵"]]
+
+                                let circ = null
+
+
+                                let min_val = 100000000000
+
+                                let c = null;
+                                let hex = colourNameToHex(localStorage.getItem("Highlight"))
+                                if(!hex) {hex = localStorage.getItem("Highlight")} 
+                                    
+                                if(hex.charAt(0) == "#") { // starts with # {
+                                    if(hex.length < 7){
+                                        new_hex = ""
+                                        new_hex = "#" + hex[1] + hex[1]
+                                        new_hex += hex[2] + hex[2]
+                                        new_hex += hex[3] + hex[3]
+                                        hex = new_hex
+                                    }
+                                    c = hexToRgb(hex)
+                                } else {
+                                    c = hex
+                                }
+                                console.log(c)
+
+                                for(let k = 0; k < colors.length; k++){
+                                    let val = (colors[k][0] - c[0]) ** 2
+                                    val += (colors[k][1] - c[1]) ** 2
+                                    val += (colors[k][2] - c[2]) ** 2
+                                    console.log(val)
+
+                             
+                                    if (val < min_val) {
+                                        min_val = val
+                                        circ = colors[k][3]
+                                    }
+                                    
+                                }
+
+                                let all_pts = localStorage.getItem("pts").split(",")
+                            
+                                for (let i = 0; i < lines.length; i += 2){
+                                    //Figure out the distance between the two points 
+                                    let d =  Math.sqrt((parseFloat(all_pts[2 * parseInt(lines[i])]) - 
+                                    parseFloat(all_pts[2 * parseInt(lines[i + 1])])) ** 2 + 
+                                    (parseFloat(all_pts[1 + 2 * parseInt(lines[i])]) - 
+                                    parseFloat(all_pts[1 + 2 * parseInt(lines[i + 1])])) ** 2) 
+                                    
+                                    let new_dist = Math.round( 2 * d / localStorage.getItem("unit_dist")) / 2
+                                
+                                    text += circ
+
+                                    for(let k = 0; k < new_dist / .5; k++){
+                                        text += "━"
+                                    }
+
+                                    text += circ
+                                    text += "\n"
+                                }
+
+                                // navigator clipboard api needs a secure context (https)
+                                if (navigator.clipboard && window.isSecureContext) {
+                                    // navigator clipboard api method'
+                                    navigator.clipboard.writeText(text);
+                                } else {
+                                    // text area method
+                                    let textArea = document.createElement("textarea");
+                                    textArea.value = text;
+                                    // make the textarea out of viewport
+                                    textArea.style.position = "fixed";
+                                    textArea.style.left = "-999999px";
+                                    textArea.style.top = "-999999px";
+                                    document.body.appendChild(textArea);
+                                    textArea.focus();
+                                    textArea.select();
+                                    new Promise((res, rej) => {
+                                        // here the magic happens
+                                        document.execCommand("copy") ? res() : rej();
+                                        textArea.remove();
+                                    });
+                                }
+
+                                console.log("Copied")
+                                showMessageStats("Copied to Clipboard", 3000); // success
+                                } else {
+                                    showMessageStats("Finish Game to Share!", 3000); //Game is in Play
+                                }
+                               
+                            } 
+                           
+                        </script>
+                        <button id = "share_button" onclick = "copy()" style = "font-size: min(4vh,4vw); height: 10vh; width: 25vw; color: #ffffff; background-color: #818384;">
+                            SHARE
+                        </button>
+                        <script>
+                             if (localStorage.getItem("indexes") != null && localStorage.getItem("indexes").split(",").length == 8){
+                                document.getElementById("share_button").style.backgroundColor = "#117733"
+                             }
+                        </script>
+                    </div>
+                </div>
+                <script>
+                    function daily_timer(){
+                        var d1 = new Date();
+                        var d2 = Date.UTC(
+                            d1.getUTCFullYear(),
+                            d1.getUTCMonth(),
+                            d1.getUTCDate() + (d1.getUTCHours() < 4 ? 0 : 1),
+                            4
+                        );
+      
+                        var dh = d2 - d1;
+                        var hours = Math.floor(dh / 3600000);
+                        var dm = dh - 3600000 * hours;
+                        var min = Math.floor(dm / 60000);
+                        var ds = dm - 60000 * min;
+                        var sec = Math.floor(ds / 1000);
+                        var dmilli = ds - 1000 * sec;
+                        setTimeout(daily_timer, dmilli);
+                        hours = ("0" + hours).slice(-2);
+                        min = ("0" + min).slice(-2);
+                        sec = ("0" + sec).slice(-2);
+
+
+                        if(document.getElementById("countdown")){
+                            document.getElementById("countdown").textContent = hours + ":" + min + ":" + sec;
+                        }
+                       
+                        const launch_date = new Date(2022, 9, 14).setHours(0, 0, 0);
+
+      
+                        //if the codenum is different from calc days then reset everything
+                        if (
+                          hours + ":" + min + ":" + sec === "00:00:00" ||
+                          localStorage.getItem("day") && parseInt(localStorage.getItem("day")) !== Math.trunc((new Date() - launch_date) / 86400000)
+                        ) {
+                          //if calc days - last_day_won is larger than 1 then I get rid of the streak
+                          if (Math.trunc((new Date() - launch_date) / 86400000) - parseInt(localStorage.getItem("last_day_won")) > 1) {
+                            localStorage.setItem("current_streak", 0);
+                          }
+      
+                          localStorage.setItem(
+                            "day",
+                            Math.trunc((new Date() - launch_date) / 86400000)
+                          );
+
+                          localStorage.setItem("seed", localStorage.getItem("day"))
+      
+
+                          localStorage.setItem("time", 0);
+                          localStorage.setItem("alpha_pts", "");
+                          localStorage.setItem("indexes", "");
+                          localStorage.setItem("des_pts", "");
+                          localStorage.setItem("asc_pts", "");
+                          localStorage.setItem("pts", "")
+                          localStorage.removeItem("range")
+                          
+                          
+                          if (localStorage.getItem("hard") === "true") {
+                            localStorage.setItem("hard_crown", "true");
+                          }
+      
+                          //reload page
+                          window.location.href = '/index.html'; 
+                        }
+                                    }
+      
+                    setInterval(daily_timer(), 1000); 
+                </script>
+        </div>
+    </body>
+  </div>
+</html>

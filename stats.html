@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>CONNECT</title>
+        <link rel="stylesheet" href="style.css" />
+        <script>
+            window.addEventListener("orientationchange", (event) => {
+                window.location.reload();
+            });
+            window.addEventListener("resize", () => {
+                window.location.reload();
+            });
+        </script>
+    </head>
+    <body>
+        <div>
+            <header style = "padding-bottom: 3vh;">
+                <h1 style = "font-size: 4vh; text-align: center;">All Time Statistics</h1>
+                <script>
+                    function back(){
+                        window.location = "/";  //Close Button clicked
+                    }
+                </script>
+                <button onclick="back()" style = "font-size: 25px; position: absolute; 
+                        right: 0; top: 0; width: 100px - 2vh; min-width: 50px; height: 100px - 2vh;
+                        min-height: 50px;">X</button>
+            </header>
+            
+
+            <div id = "info" style = "padding-bottom: 5vh; display: flex; margin: 0 auto; font-size: min(calc(12px + 1.5vw), calc(12px + 1.5vh));">
+                <div id = "num_container" class = "statistic-container">
+                    <div class = "statistic" id = "info_num"></div>
+                    <div class = "label" style = "font-size: min(calc(12px + 1.5vw), calc(12px + 1.5vh));" >Played Games</div>
+                </div>
+                <div id = "win_percent_container" class = "statistic-container">
+                    <div class = "statistic" id = "win_num"></div>
+                    <div class = "label" style = "font-size: min(calc(12px + 1.5vw), calc(12px + 1.5vh));">Won Games(%)</div>
+                </div>
+                <div id = "curr_streak_container" class = "statistic-container">
+                    <div class = "statistic" id = "curr_streak"></div>
+                    <div class = "label" style = "font-size: min(calc(12px + 1.5vw), calc(12px + 1.5vh));">Current Streak</div>
+                </div>
+                <div id = "max_streak_container" class = "statistic-container">
+                    <div class = "statistic" id = "max_streak"></div>
+                    <div class = "label" style = "font-size: min(calc(12px + 1.5vw), calc(12px + 1.5vh));">Max Streak</div>
+                </div>
+                <div id = "avg_range_container" class = "statistic-container">
+                    <div class = "statistic" id = "avg_range"></div>
+                    <div class = "label" style = "font-size: min(calc(12px + 1.5vw), calc(12px + 1.5vh));">Average Range</div>
+                </div>
+               
+            </div>
+          
+            <div id = "graph" style="width: 100%">
+                <h1 style = "font-size: 3vh; text-align: center;">Range Distribution</h1>
+            </div>
+
+        </div>
+        <script>
+
+            if (localStorage.getItem("dark") == "true"){
+                document.body.classList.add("dark-mode");
+            } else {
+                document.body.classList.remove("dark-mode");
+            }
+
+
+            function rangeSymbol(range){
+                if(range < 0.01){
+                    return "=0"
+                } else if(range <= 1){
+                    return "≤1"
+                } else if(range <= 2){
+                    return "≤2"
+                } else if (range <= 3){
+                    return "≤3"
+                } else if (range <= 4){
+                    return "≤4"
+                } else if (range <= 5){
+                    return "≤5"
+                } else if (range <= 6){
+                    return "≤6"
+                } else if (range <= 7){
+                    return "≤7"
+                } else if (range <= 8){
+                    return "≤8"
+                } else {
+                    return ">8"
+                }
+            }
+
+
+            if(!localStorage.getItem("games_played")){localStorage.setItem("games_played", 0)}
+            document.getElementById("info_num").textContent = localStorage.getItem("games_played");
+
+            if(!localStorage.getItem("win_rate")){localStorage.setItem("win_rate", 0)}
+            document.getElementById("win_num").textContent = Math.round(localStorage.getItem("win_rate") * 100);
+
+            if(!localStorage.getItem("current_streak")){localStorage.setItem("current_streak", 0)}
+            document.getElementById("curr_streak").textContent = localStorage.getItem("current_streak");
+
+            if(!localStorage.getItem("max_streak")){localStorage.setItem("max_streak", 0)}
+            document.getElementById("max_streak").textContent = localStorage.getItem("max_streak");
+
+            if(!localStorage.getItem("avg_range")){localStorage.setItem("avg_range", "-")}
+            document.getElementById("avg_range").textContent = localStorage.getItem("avg_range");
+
+            let graph = document.getElementById("graph")
+            let graph_bars = [0,0,0,0,0,0,0,0,0,0]
+
+
+            if(!localStorage.getItem("range_distribution")){
+                localStorage.setItem("range_distribution", graph_bars) 
+            } else {
+                graph_bars = localStorage.getItem("range_distribution").split(",")
+            }
+
+
+            //we have guess distributions
+            const labels = ["=0", "≤1", "≤2", "≤3", "≤4", "≤5", "≤6", "≤7", "≤8", ">8"];
+            const max_guess = Math.max(...graph_bars);
+            let width = 0;
+
+            for (let i = 0; i < labels.length; i++) {
+                const bar = document.createElement("div");
+                bar.style.alignItems = "center";
+                bar.style.fontSize = "1.6em";
+
+                //1-10 on bar
+                const num = document.createElement("div");
+                num.textContent = labels[i];
+                num.style.width = "2vw";
+                num.style.display = "inline-block";
+                num.style.marginLeft = "10vw";
+                num.style.fontSize = "3vh";
+
+                //blue bar
+                const bar_info = document.createElement("div");
+
+                if (
+                    labels[i] === rangeSymbol(parseFloat(localStorage.getItem("range"))) &&
+                    localStorage.getItem("alpha_pts").split(",").length === 16
+                ) {
+                    bar_info.style.backgroundColor = "#0F89C5";
+                } else {
+                    bar_info.style.backgroundColor = "#818384";
+                }
+
+                bar_info.style.display = "inline-block";
+                bar_info.style.marginLeft = "5vw";
+                bar_info.style.height = "2.5vh";
+
+                //Bar quantity number
+                const bar_info_text = document.createElement("span");
+                bar_info_text.textContent = graph_bars[i];
+                bar_info_text.style.paddingLeft = "1vw";
+                bar_info_text.style.fontSize = "3vh";
+
+                width = (parseInt(graph_bars[i]) * 75) / max_guess;
+
+                if (width < 1 || parseInt(graph_bars[i]) === 0) {
+                    bar_info.style.width = "1vw";
+                } else {
+                    bar_info.style.width = width + "vw";
+                }
+
+                bar.appendChild(num);
+                bar.appendChild(bar_info);
+                bar.appendChild(bar_info_text);
+
+                bar.style.marginBottom = "1vh";
+
+                graph.appendChild(bar);
+            }
+
+        </script>
+        <script>
+            function daily_timer(){
+                        var d1 = new Date();
+                        var d2 = Date.UTC(
+                            d1.getUTCFullYear(),
+                            d1.getUTCMonth(),
+                            d1.getUTCDate() + (d1.getUTCHours() < 4 ? 0 : 1),
+                            4
+                        );
+      
+                        var dh = d2 - d1;
+                        var hours = Math.floor(dh / 3600000);
+                        var dm = dh - 3600000 * hours;
+                        var min = Math.floor(dm / 60000);
+                        var ds = dm - 60000 * min;
+                        var sec = Math.floor(ds / 1000);
+                        var dmilli = ds - 1000 * sec;
+                        setTimeout(daily_timer, dmilli);
+                        hours = ("0" + hours).slice(-2);
+                        min = ("0" + min).slice(-2);
+                        sec = ("0" + sec).slice(-2);
+
+
+                        if(document.getElementById("countdown")){
+                            document.getElementById("countdown").textContent = hours + ":" + min + ":" + sec;
+                        }
+                       
+                        const launch_date = new Date(2022, 9, 14).setHours(0, 0, 0);
+
+      
+                        //if the codenum is different from calc days then reset everything
+                        if (
+                          hours + ":" + min + ":" + sec === "00:00:00" ||
+                          localStorage.getItem("day") && parseInt(localStorage.getItem("day")) !== Math.trunc((new Date() - launch_date) / 86400000)
+                        ) {
+                          //if calc days - last_day_won is larger than 1 then I get rid of the streak
+                          if (Math.trunc((new Date() - launch_date) / 86400000) - parseInt(localStorage.getItem("last_day_won")) > 1) {
+                            localStorage.setItem("current_streak", 0);
+                          }
+      
+                          localStorage.setItem(
+                            "day",
+                            Math.trunc((new Date() - launch_date) / 86400000)
+                          );
+
+                          localStorage.setItem("seed", localStorage.getItem("day"))
+      
+
+                          localStorage.setItem("time", 0);
+                          localStorage.setItem("alpha_pts", "");
+                          localStorage.setItem("indexes", "");
+                          localStorage.setItem("des_pts", "");
+                          localStorage.setItem("asc_pts", "");
+                          localStorage.setItem("pts", "")
+                          localStorage.removeItem("range")
+                          
+                          
+                          if (localStorage.getItem("hard") === "true") {
+                            localStorage.setItem("hard_crown", "true");
+                          }
+      
+                          //reload page
+                          window.location.href = '/index.html'; 
+                        }
+                                    }
+            setInterval(daily_timer(), 1000); 
+        </script>
+    </body>
+  </div>
+</html>

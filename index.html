@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>CONNECT</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="https://unpkg.com/huebee@2/dist/huebee.min.css">
+    </head>
+    <body>
+        <div class="game-container" style = "min-height: 100%;" >
+            <div id = "Home" class="title-container" style="height: 5vh">
+              <div class="title" style="display: block; margin: 0 auto; text-align:center">
+                <canvas id = "titleCanvas" style = "width: 70vw; height: 10vh; margin: auto; border:2px solid black"></canvas>
+                <script>
+                  
+
+                  function drawLine(x1, y1, x2, y2, color, width, canvas) {
+                    // draw a red line
+                    let context = canvas.getContext("2d");
+                    context.strokeStyle = color;
+                    context.lineWidth = width;
+                    context.beginPath();
+                    context.moveTo(x1, y1);
+                    context.lineTo(x2, y2);
+                    context.stroke();
+                    context.closePath();
+                  }
+
+                  let titlecanvas = document.getElementById("titleCanvas")
+                  ctx = titlecanvas.getContext("2d");
+
+                  titlecanvas.style.borderColor = localStorage.getItem("dark") === "true" ? "white" : "black";
+
+                style_height = +getComputedStyle(titlecanvas)
+                .getPropertyValue("height")
+                .slice(0, -2);
+                //get CSS width
+                style_width = +getComputedStyle(titlecanvas)
+                .getPropertyValue("width")
+                .slice(0, -2);
+
+                dpi = window.devicePixelRatio;
+                titlecanvas.setAttribute("height", style_height * dpi);
+                titlecanvas.setAttribute("width", style_width * dpi);
+
+            
+
+                  width_boxes = 7
+
+                /*   C = 4
+                  O = 4
+                  N = 4
+                  N = 4
+                  E = 6
+                  C = 4
+                  T = 4 */
+                  
+              
+                 /*  //divide into connect! 8 equal slices
+                  for (let i = 1; i < width_boxes; i++) {
+                    drawLine(
+                      i * (titlecanvas.width / width_boxes),
+                      0,
+                      i * (titlecanvas.width / width_boxes),
+                      titlecanvas.height,
+                      localStorage.getItem("dark") === "true" ? "white" : "black",
+                      2, titlecanvas
+                    );
+                  } */
+
+                length = titlecanvas.width / width_boxes
+                radius2 = 0.06 * Math.min(titlecanvas.width, titlecanvas.height);
+                startx = (60/256) * length
+                starty = (30 / 160) * titlecanvas.height
+
+                points = [[startx,starty], [3 * startx,starty], [startx,starty], [startx,13/3 * starty], [startx,13/3 * starty], [3 * startx,13/3 * starty],
+                [startx + length,starty], [3 * startx + length,starty], [startx + length,starty], [startx + length,13/3 * starty], [startx + length,13/3 * starty], [3 * startx + length, 13/3 * starty], [3 * startx + length,starty], [3 * startx + length,13/3 * starty],
+
+                [startx + 2 * length,starty], [startx + 2 * length,13/3 * starty], [startx + 2 * length,starty], [3 * startx + 2 * length, 13/3 * starty], [3 * startx + 2 * length,starty], [3 * startx + 2 * length, 13/3 * starty],
+
+                [startx + 3 * length,starty], [startx + 3 * length,13/3 * starty], [startx + 3 * length,starty], [3 * startx + 3 * length,13/3 * starty], [3 * startx + 3 * length,starty], [3 * startx + 3 * length,13/3 * starty],
+                [startx + 4 * length,starty], [3 * startx + 4 * length,starty], [startx + 4 * length,starty], [startx + 4 * length,8/3 * starty], [startx + 4 * length,8/3 * starty], [3 * startx + 4 * length,8/3 * starty], [startx + 4 * length,8/3 * starty], [startx + 4 * length,13/3 * starty], [startx + 4 * length,13/3 * starty], [3 * startx + 4 * length,13/3 * starty],
+                [startx + 5 * length,starty], [3 * startx + 5 * length,starty], [startx + 5 * length,starty], [startx + 5 * length,13/3 * starty], [startx + 5 * length,13/3 * starty], [3 * startx + 5 * length,13/3 * starty],
+                [startx + 6 * length,starty], [2 * startx + 6 * length, starty], [2 * startx + 6 * length, starty], [3 * startx + 6 * length,starty], [2 * startx + 6 * length, starty], [2 * startx + 6 * length, 13/3 * starty]]
+
+               
+      
+                ctx.strokeStyle = localStorage.getItem("Line") ? localStorage.getItem("Line") : "red"; //lineColor
+
+
+                for(let i = 0; i < points.length; i += 2){
+                  ctx.beginPath();
+                  ctx.arc(points[i][0], points[i][1], radius2, 0, 2 * Math.PI, false);
+                  ctx.fillStyle = localStorage.getItem("Dot") ? localStorage.getItem("Dot") : "blue"; //circleFillColor
+                  ctx.fill();
+                  ctx.strokeStyle = localStorage.getItem("dark") === "true" ? "white" : "black";
+                  ctx.stroke();
+
+                  ctx.beginPath();
+                  ctx.arc(points[i + 1][0], points[i + 1][1], radius2, 0, 2 * Math.PI, false);
+                  ctx.fillStyle = localStorage.getItem("Dot") ? localStorage.getItem("Dot") : "blue"; //circleFillColor
+                  ctx.fill();
+                  ctx.strokeStyle = localStorage.getItem("dark") === "true" ? "white" : "black";
+                  ctx.stroke();
+                }
+
+                i = 0
+
+                function myLoop(){
+                  setTimeout(function(){
+                    ctx = titlecanvas.getContext("2d");
+                    rad = 1.25 * 0.06 * Math.min(titlecanvas.width, titlecanvas.height); 
+                    ctx.lineWidth = 7; 
+ 
+                    ctx.strokeStyle = localStorage.getItem("Line") ? localStorage.getItem("Line") : "red"; //lineColor
+                    ctx.beginPath();
+                    ctx.moveTo(points[i][0], points[i][1]);
+                    ctx.lineTo(points[i + 1][0], points[i + 1][1]);
+                    ctx.stroke();
+
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.arc(points[i][0], points[i][1], rad, 0, 2 * Math.PI, false);
+                    ctx.fillStyle = localStorage.getItem("Dot") ? localStorage.getItem("Dot") : "blue"; //circleFillColor
+                    ctx.fill();
+                    ctx.strokeStyle = localStorage.getItem("dark") === "true" ? "white" : "black";
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.arc(points[i + 1][0], points[i + 1][1], rad, 0, 2 * Math.PI, false);
+                    ctx.fillStyle = localStorage.getItem("Dot") ? localStorage.getItem("Dot") : "blue"; //circleFillColor
+                    ctx.fill();
+                    ctx.strokeStyle = localStorage.getItem("dark") === "true" ? "white" : "black";
+                    ctx.stroke();
+
+                    i = i + 2
+                    if(i < points.length){
+                      myLoop()
+                    }
+                    
+                  }, 300)
+                }
+
+                myLoop()
+
+                
+                </script>
+
+              </div>
+
+              <div class="buttons">
+                <button onclick="help()"
+                  id="help-button"
+                  class="icon"
+                  aria-label="Help"
+                  tabindex="-1"
+                  style="left: 0.5vw; top: 1.3vh; position: absolute"
+                >
+                  <game-icon icon="help"></game-icon>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="min(5vw,5vh)"
+                    viewBox="0 0 24 24"
+                    width="min(5vw,5vh)"
+                  >
+                    <path
+                      fill="var(--color-tone-1)"
+                      d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"
+                    ></path>
+                  </svg>
+
+                  <script>
+                    function help(){
+                      window.location.href = "help.html"
+                    }
+                  </script>
+      
+                </button>
+             
+                <button onclick = "stats()"
+                  id="statistics-button"
+                  class="icon"
+                  aria-label="Statistics"
+                  tabindex="-1"
+                  style="right: 0.5vw; top: 1.3vh; position: absolute"
+                >
+                  <game-icon icon="statistics"></game-icon>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="min(5vw,5vh)"
+                    viewBox="0 0 24 24"
+                    width="min(5vw,5vh)"
+                  >
+                    <path
+                      fill="var(--color-tone-1)"
+                      d="M16,11V3H8v6H2v12h20V11H16z M10,5h4v14h-4V5z M4,11h4v8H4V11z M20,19h-4v-6h4V19z"
+                    ></path>
+                  </svg>
+                  <script>
+                    function stats(){
+                      window.location = "stats.html"
+                    }
+                  </script>
+                </button>
+                <button onclick="settings()"
+                  id="settings-button"
+                  class="icon"
+                  aria-label="Settings"
+                  tabindex="-1"
+                  style="right: 7.5vw; top: 1.3vh; position: absolute"
+                >
+                  <game-icon icon="chart"></game-icon>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="min(5vw,5vh)"
+                    viewBox="0 0 24 24"
+                    width="min(5vw,5vh)"
+                  >
+                    <path
+                      fill="var(--color-tone-1)"
+                      d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"
+                    ></path>
+                  </svg>
+                  <script>
+                    function settings(){
+                      window.location.href = "settings.html"
+                    }
+                  </script>
+                </button>
+                <button onclick="daily()"
+                  id="daily-button"
+                  class="icon"
+                  aria-label="chart"
+                  tabindex="-1"
+                  style="left: 7.5vw; top: 1.3vh; position: absolute"
+                >
+                  <img
+                  src="/images/segment.png"
+                  style="height: min(5.5vw, 5.5vh); width: min(5.5vw, 5.5vh); float: left"
+                />
+
+                <script>
+                  function daily(){
+                    window.location.href = "daily.html"
+                  }
+                </script>
+
+                </button>
+              </div>
+            </div>
+           
+
+            <canvas id = "gameCanvas" style = "width: 95vw; height: 75vh; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid black"></canvas>
+        
+            <div style = "text-align: center; min-width: 100%; position: absolute;  bottom: 0; left: 0; margin: 0;color: black;">
+              <canvas id="hint" style="height: 5vh; min-width: 100%;"></canvas>
+              <div id = "Bottom" style="height: 5vh; font-size: xx-large;"></div>
+              <script src="game.js"></script>
+              <script>  
+
+                document.getElementById("gameCanvas").style.borderColor = localStorage.getItem("dark") === "true" ? "white" : "black"
+
+                if (localStorage.getItem("dark") == "true"){
+                  document.body.classList.add("dark-mode");
+                } else {
+                  document.body.classList.remove("dark-mode");
+                }
+
+                let hintCanvas = document.getElementById("hint");
+                let ctx = hintCanvas.getContext("2d");
+                dpi = window.devicePixelRatio;
+
+                if(localStorage.getItem("hard") == "true"){
+                  hintCanvas.style.display = "none"
+                } 
+                           
+                style_height = +getComputedStyle(hintCanvas)
+                .getPropertyValue("height")
+                .slice(0, -2);
+                //get CSS width
+                style_width = +getComputedStyle(hintCanvas)
+                .getPropertyValue("width")
+                .slice(0, -2);
+
+                hintCanvas.setAttribute("height", style_height * dpi);
+                hintCanvas.setAttribute("width", style_width * dpi);
+
+                radius2 = 0.45 * Math.min(hintCanvas.width, hintCanvas.height);
+                dd = parseInt(localStorage.getItem("dist")) * parseFloat(localStorage.getItem("unit_dist"))
+                console.log(dd)
+                
+                ctx.strokeStyle = localStorage.getItem("Line") ? localStorage.getItem("Line") : "red"; //lineColor
+                ctx.lineWidth = 5;
+
+                
+
+                ctx.beginPath();
+                ctx.moveTo(dd/2 + hintCanvas.width / 2, hintCanvas.height / 2);
+                ctx.lineTo((hintCanvas.width / 2) - dd/2,  hintCanvas.height / 2);
+                ctx.stroke();
+                            
+                ctx.beginPath();
+                ctx.arc(dd/2 + hintCanvas.width / 2, hintCanvas.height / 2, radius2, 0, 2 * Math.PI, false);
+                ctx.fillStyle = localStorage.getItem("Dot") ? localStorage.getItem("Dot") : "blue"; //circleFillColor
+                ctx.fill();
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = localStorage.getItem("dark") === "true" ? "white" : "black";
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc((hintCanvas.width / 2) - dd/2, hintCanvas.height / 2, radius2, 0, 2 * Math.PI, false);
+                ctx.fillStyle = localStorage.getItem("Dot") ? localStorage.getItem("Dot") : "blue"; //circleFillColor
+                ctx.fill();
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = localStorage.getItem("dark") === "true" ? "white" : "black";
+                ctx.stroke();
+              </script>
+            </div>
+            <script>
+              function daily_timer(){
+                        var d1 = new Date();
+                        var d2 = Date.UTC(
+                            d1.getUTCFullYear(),
+                            d1.getUTCMonth(),
+                            d1.getUTCDate() + (d1.getUTCHours() < 4 ? 0 : 1),
+                            4
+                        );
+      
+                        var dh = d2 - d1;
+                        var hours = Math.floor(dh / 3600000);
+                        var dm = dh - 3600000 * hours;
+                        var min = Math.floor(dm / 60000);
+                        var ds = dm - 60000 * min;
+                        var sec = Math.floor(ds / 1000);
+                        var dmilli = ds - 1000 * sec;
+                        setTimeout(daily_timer, dmilli);
+                        hours = ("0" + hours).slice(-2);
+                        min = ("0" + min).slice(-2);
+                        sec = ("0" + sec).slice(-2);
+
+
+                        if(document.getElementById("countdown")){
+                            document.getElementById("countdown").textContent = hours + ":" + min + ":" + sec;
+                        }
+                       
+                        const launch_date = new Date(2022, 9, 14).setHours(0, 0, 0);
+
+      
+                        //if the codenum is different from calc days then reset everything
+                        if (
+                          hours + ":" + min + ":" + sec === "00:00:00" ||
+                          localStorage.getItem("day") && parseInt(localStorage.getItem("day")) !== Math.trunc((new Date() - launch_date) / 86400000)
+                        ) {
+                          //if calc days - last_day_won is larger than 1 then I get rid of the streak
+                          if (Math.trunc((new Date() - launch_date) / 86400000) - parseInt(localStorage.getItem("last_day_won")) > 1) {
+                            localStorage.setItem("current_streak", 0);
+                          }
+      
+                          localStorage.setItem(
+                            "day",
+                            Math.trunc((new Date() - launch_date) / 86400000)
+                          );
+
+                          localStorage.setItem("seed", localStorage.getItem("day"))
+      
+
+                          localStorage.setItem("time", 0);
+                          localStorage.setItem("alpha_pts", "");
+                          localStorage.setItem("indexes", "");
+                          localStorage.setItem("des_pts", "");
+                          localStorage.setItem("asc_pts", "");
+                          localStorage.setItem("pts", "")
+                          localStorage.removeItem("range")
+                          
+                          
+                          if (localStorage.getItem("hard") === "true") {
+                            localStorage.setItem("hard_crown", "true");
+                          }
+      
+                          //reload page
+                          window.location.href = '/index.html'; 
+                        }
+                                    }
+              setInterval(daily_timer(), 1000); 
+          </script>
+    </body>
+  </div>
+</html>
+   
