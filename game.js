@@ -598,3 +598,7 @@ if (localStorage.getItem("alpha_pts")) {
 
 localStorage.setItem("pts", pts);
 reDrawCanvas();
+
+//settings color buttons vertical
+
+//

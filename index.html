@@ -10,7 +10,7 @@
         <div class="game-container" style = "min-height: 100%;" >
             <div id = "Home" class="title-container" style="height: 5vh">
               <div class="title" style="display: block; margin: 0 auto; text-align:center">
-                <canvas id = "titleCanvas" style = "width: 70vw; height: 10vh; margin: auto; border:2px solid black"></canvas>
+                <canvas id = "titleCanvas" style = "width: 70vw; height: 10vh; margin: auto;  position: relative; bottom: 1vh;"></canvas>
                 <script>
                   
 
@@ -249,11 +249,12 @@
               </div>
             </div>
            
+  
 
             <canvas id = "gameCanvas" style = "width: 95vw; height: 75vh; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid black"></canvas>
         
-            <div style = "text-align: center; min-width: 100%; position: absolute;  bottom: 0; left: 0; margin: 0;color: black;">
-              <canvas id="hint" style="height: 5vh; min-width: 100%;"></canvas>
+            <div style = "text-align: center; width: 100%; position: absolute;  bottom: 0; left: 0; margin: 0;color: black;">
+              <canvas id="hint" style="height: 5vh; width: 100%; position: relative; top: 1vh;"></canvas>
               <div id = "Bottom" style="height: 5vh; font-size: xx-large;"></div>
               <script src="game.js"></script>
               <script>  
