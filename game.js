@@ -193,7 +193,7 @@ if (end < Date.now()) {
 
 for (let i = 0; i < pts.length; i += 2) {
   //console.log(pts[i][0], pts[i][1]);
-  //drawLine(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], "green", 8);
+  drawLine(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], "green", 8);
   drawPoint(pts[i][0], pts[i][1], ptFillColor);
   drawPoint(pts[i + 1][0], pts[i + 1][1], ptFillColor);
 }
@@ -308,7 +308,13 @@ function reDrawCanvas() {
   var indices = new Array(len);
   for (var j = 0; j < len; ++j) indices[j] = j;
   indices.sort(function (a, b) {
-    return test[a] < test[b] ? -1 : test[a] > test[b] ? 1 : a < b ? -1 : 1;
+    return test[a] + 0.01 < test[b]
+      ? -1
+      : test[a] - 0.01 > test[b]
+      ? 1
+      : a < b
+      ? -1
+      : 1;
   });
 
   localStorage.setItem("indexes", indices);
@@ -573,10 +579,8 @@ function convertHMS(value) {
 
   if (hours > 0) {
     return hours + ":" + minutes + ":" + seconds;
-  } else if (minutes > 0) {
-    return minutes + ":" + seconds;
   } else {
-    return ":" + seconds;
+    return minutes + ":" + seconds;
   }
 }
 
@@ -598,7 +602,3 @@ if (localStorage.getItem("alpha_pts")) {
 
 localStorage.setItem("pts", pts);
 reDrawCanvas();
-
-//settings color buttons vertical
-
-//

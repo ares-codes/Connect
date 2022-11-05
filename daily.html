@@ -286,10 +286,8 @@
 
                                 if(hours > 0) {
                                     return hours + ":" + minutes + ":" + seconds;
-                                } else if (minutes > 0){
-                                    return minutes + ":" + seconds
                                 } else {
-                                    return ":" + seconds
+                                    return minutes + ":" + seconds
                                 }
                             }
 
@@ -379,6 +377,11 @@
                                     text += circ
                                     text += "\n"
                                 }
+
+                                text += "\n"
+                                text += "https://connectgame1.netlify.app/"
+
+                               
 
                                 // navigator clipboard api needs a secure context (https)
                                 if (navigator.clipboard && window.isSecureContext) {
