@@ -1,3 +1,4 @@
+//localStorage.clear();
 if (!localStorage.getItem("hard")) {
   localStorage.setItem("hard", "false");
   localStorage.setItem("hard_crown", "false");
