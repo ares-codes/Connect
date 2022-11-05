@@ -193,7 +193,7 @@ if (end < Date.now()) {
 
 for (let i = 0; i < pts.length; i += 2) {
   //console.log(pts[i][0], pts[i][1]);
-  drawLine(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], "green", 8);
+  //drawLine(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], "green", 8);
   drawPoint(pts[i][0], pts[i][1], ptFillColor);
   drawPoint(pts[i + 1][0], pts[i + 1][1], ptFillColor);
 }
