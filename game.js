@@ -555,8 +555,8 @@ function incrementSeconds() {
   }
 }
 
-setInterval(incrementSeconds, 1000);
 canvas.onclick = clickCanvas;
+setInterval(incrementSeconds, 1000);
 
 window.addEventListener("resize", () => {
   window.location.reload();

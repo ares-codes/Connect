@@ -74,13 +74,13 @@
                             hintCanvas.setAttribute("height", style_height * dpi);
                             hintCanvas.setAttribute("width", style_width * dpi);
 
-                            let radius = 0.25 * Math.min(hintCanvas.width, hintCanvas.height);
+                            let rad = 0.2 * Math.min(hintCanvas.width, hintCanvas.height);
                             let dd = localStorage.getItem("unit_dist") * help_length;
 
                             ctx.strokeStyle = localStorage.getItem("Line") ? localStorage.getItem("Line") : "red"; //lineColor
                             ctx.lineWidth = 5;
 
-                            if (Math.hypot(dd, 0) <= 2 * radius){
+                            if (Math.hypot(dd, 0) <= 2 * rad){
                                 window.location.reload()
                             }
 
@@ -90,7 +90,7 @@
                             ctx.stroke();
                             
                             ctx.beginPath();
-                            ctx.arc(dd/2 + hintCanvas.width / 2, hintCanvas.height / 2, radius, 0, 2 * Math.PI, false);
+                            ctx.arc(dd/2 + hintCanvas.width / 2, hintCanvas.height / 2, rad, 0, 2 * Math.PI, false);
                             ctx.fillStyle = localStorage.getItem("Dot") ? localStorage.getItem("Dot") : "blue"; //circleFillColor
                             ctx.fill();
                             ctx.lineWidth = 4;
@@ -98,7 +98,7 @@
                             ctx.stroke();
 
                             ctx.beginPath();
-                            ctx.arc((hintCanvas.width / 2) - dd/2, hintCanvas.height / 2, radius, 0, 2 * Math.PI, false);
+                            ctx.arc((hintCanvas.width / 2) - dd/2, hintCanvas.height / 2, rad, 0, 2 * Math.PI, false);
                             ctx.fillStyle = localStorage.getItem("Dot") ? localStorage.getItem("Dot") : "blue"; //circleFillColor
                             ctx.fill();
                             ctx.lineWidth = 4;
@@ -113,7 +113,7 @@
                         </p>
                         <canvas id = "exCanvas" style = "width: 100vw; height: 30vh; position: relative;"></canvas>
                         <script>
-                            radius = 0.25 * Math.min(hintCanvas.width, hintCanvas.height);
+                            rad = 0.2 * Math.min(hintCanvas.width, hintCanvas.height);
                             //no points are overlapping other points
                             function intersect(x0, y0, r0, x1, y1, r1) {
                                 return Math.hypot(x0 - x1, y0 - y1) <= r0 + r1;
@@ -121,7 +121,7 @@
 
                             function overlaps(x, y, pts) {
                                 for (let i = 0; i < pts.length; i++) {
-                                    if (intersect(x, y, radius, pts[i][0], pts[i][1], radius)) {
+                                    if (intersect(x, y, rad, pts[i][0], pts[i][1], rad)) {
                                     //console.log(pts[i][0], pts[i][1]);
                                     return true;
                                     }
@@ -132,10 +132,10 @@
                             //points are fully visible on screen
                             function offCanvas(x, y, ctx) {
                                 return (
-                                    x - radius <= 0 ||
-                                    x + radius >= ctx.width ||
-                                    y - radius <= 0 ||
-                                    y + radius >= ctx.height
+                                    x - rad <= 0 ||
+                                    x + rad >= ctx.width ||
+                                    y - rad <= 0 ||
+                                    y + rad >= ctx.height
                                 );
                             }
 
@@ -206,7 +206,7 @@
 
                                 for(let i = 0; i < points.length; i += 2){
                                     ctx.beginPath();
-                                    ctx.arc(points[i][0], points[i][1], radius, 0, 2 * Math.PI, false);
+                                    ctx.arc(points[i][0], points[i][1], rad, 0, 2 * Math.PI, false);
                                     ctx.fillStyle = localStorage.getItem("Highlight") ? localStorage.getItem("Highlight") : "yellow"; //circleFillColor
                                     ctx.fill();
                                     ctx.lineWidth = 4;
@@ -214,7 +214,7 @@
                                     ctx.stroke();
 
                                     ctx.beginPath();
-                                    ctx.arc(points[i + 1][0], points[i + 1][1], radius, 0, 2 * Math.PI, false);
+                                    ctx.arc(points[i + 1][0], points[i + 1][1], rad, 0, 2 * Math.PI, false);
                                     ctx.fillStyle = localStorage.getItem("Highlight") ? localStorage.getItem("Highlight") : "yellow"; //circleFillColor
                                     ctx.fill();
                                     ctx.lineWidth = 4;
@@ -222,7 +222,7 @@
                                     ctx.stroke();
 
                                     ctx.beginPath()
-                                    ctx.font = (1.8 * radius).toString() + "px serif";
+                                    ctx.font = (1.8 * rad).toString() + "px serif";
                                     ctx.textAlign = "center"
                                     ctx.fillStyle =  "black"
                                     ctx.textBaseline = "middle"
