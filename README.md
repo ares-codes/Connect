@@ -1,3 +1,3 @@
 # Connect
 
-Click [here](https://connectgame1.netlify.app/) to go to the site.
+Click [here](https://ashack7426.github.io/Connect/index.html) to go to the site.
