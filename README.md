@@ -1,3 +1,3 @@
 # Connect
 
-Click [here](https://ashack7426.github.io/Connect/index.html) to go to the site.
+Click [here](https://ares-codes.github.io/Connect/) to go to the site.
